@@ -3,6 +3,7 @@ import random
 from field import Field
 from constants import *
 from exceptions import *
+from game import *
 
 class Board(object):
 
@@ -13,8 +14,10 @@ class Board(object):
         self.width = cols
         self.height = rows
         self.grid = []
+        self.computer_grid = []
         # nodes = [[Node() for j in range(cols)] for i in range(rows)]
         self.grid = [ [Field() for j in range(cols)] for i in range(rows) ]
+        self.computer_grid = [ [Field() for j in range(cols)] for i in range(rows) ]
 
     def is_game_finished(self):
         flat = sum(self.grid, [])
@@ -39,12 +42,15 @@ class Board(object):
         direction = random.choice(orientation)
         try:
             self.add_ship(length=length, orientation=random.choice(orientation), row=row, col=col)
-        except FieldTakenException as e:
+        except exceptions.FieldTakenException as e:
             self.add_random_ship(length)
 
     def add_random_ships(self, num):
+        total_length = 0
         for i in range(1, num+1):
             self.add_random_ship(i)
+            total_length += i
+        return total_length
 
     def add_ship(self, length, orientation, row, col):
         # FIXME! sprawdz czy nie istnieje tu inny statek albo jestes poza plansza FIXME!
@@ -57,6 +63,7 @@ class Board(object):
                 for current_row in range(row, row+length):
                     self.grid[current_row][col].ship = True
                 return True
+            self.game.total_shots = self.game.total_shots + length
         else:
              raise FieldTakenException("Ship already exists on this place")
 
@@ -78,6 +85,13 @@ class Board(object):
         # return is_ship_present
         #-------
         field = self.grid[row][col]
-        field.reveal = True
+        if not field.reveal:
+            field.reveal = True
+            if field.ship:
+                return True
+        if field.ship and field.reveal:
+            return False
+
+
         # if field.ship == True:
             # field.reveal = True
