@@ -49,7 +49,6 @@ class Board(object):
             self.add_random_ship(length)
 
     def add_ship(self, length, orientation, row, col):
-        # FIXME! sprawdz czy nie istnieje tu inny statek albo jestes poza plansza FIXME!
         if self.are_fields_empty(length, orientation, row, col):
             if orientation == Board.HORIZONTAL:
                 for current_column in range(col, col+length):
@@ -61,83 +60,90 @@ class Board(object):
                 return True
             self.game.total_shots = self.game.total_shots + length
         else:
-             raise FieldTakenException("Ship already exists on this place")
+            return False
+            #  raise FieldTakenException("Ship already exists on this place")
 
-    def add_ships_manual(self, number_of_human_ships, row, col):
-        # orientation = [Board.HORIZONTAL, Board.VERTICAL]
-        # direction = random.choice(orientation)
-        # self.add_ship(number_of_human_ships, direction, row, col)
-        print "Wspolrzedne [{}][{}], statek dlugosci {}/{}".format(col, row, self.new_ship_length , number_of_human_ships)
-        if self.new_ship_length == number_of_human_ships:
-            self.add_ship(self.new_ship_length, self.new_ship_orientation, self.new_ship_row[0], self.new_ship_col[0])
-            print "new_ship_length {} == {} number_of_human_ships".format(self.new_ship_length, number_of_human_ships)
-
-            #Reset values
-            print "Resetuje wartosci statku {}".format(number_of_human_ships)
-            self.new_ship_col = []
-            self.new_ship_row = []
-            self.new_ship_length = 0
-            self.new_ship_orientation = Board.HORIZONTAL
-
-            print "Zwracam True dla statku numer {}".format(number_of_human_ships)
+    def add_ships_manual(self, row, col):
+        if self.add_ship(1, Board.HORIZONTAL, row, col):
             return True
         else:
-            if self.new_ship_length == 0:
-                self.new_ship_col.append(col)
-                self.new_ship_row.append(row)
-                self.new_ship_length += 1
-                print "nowa dlugosc statku: {}".format(self.new_ship_length)
-                self.add_ships_manual(number_of_human_ships, row, col)
-                return False
-            elif self.new_ship_length == 1:
-                print "new_ship_length = 1"
-                if col != self.new_ship_col[0] and row != self.new_ship_row[0]:
-                    print "Pierwszy if"
-                    return False
-                elif col != self.new_ship_col[0] and row == self.new_ship_row[0]:
-                    print "Drugi if"
-                    self.new_ship_orientation = Board.VERTICAL
-                    self.new_ship_col.append(col)
-                    self.new_ship_row.append(row)
-                    self.new_ship_length += 1
-                    self.add_ships_manual(number_of_human_ships, row, col)
-                    return False
-                elif col == self.new_ship_col[0] and row != self.new_ship_row[0]:
-                    print "Trzeci if"
-                    self.new_ship_orientation = Board.HORIZONTAL
-                    self.new_ship_col.append(col)
-                    self.new_ship_row.append(row)
-                    self.new_ship_length += 1
-                    self.add_ships_manual(number_of_human_ships, row, col)
-                    return False
-            elif self.new_ship_length >= 2:
-                if self.orientation == Board.VERTICAL:
-                    if col != self.new_ship_col[0]:
-                        return False
-                    else:
-                        self.new_ship_col.append(col)
-                        self.new_ship_row.append(row)
-                        self.new_ship_length += 1
-                        self.add_ships_manual(number_of_human_ships, row, col)
-                        return False
-                elif self.orientation == Board.HORIZONTAL:
-                    if row != self.new_ship_row[0]:
-                        return False
-                    else:
-                        self.new_ship_col.append(col)
-                        self.new_ship_row.append(row)
-                        self.new_ship_length += 1
-                        self.add_ships_manual(number_of_human_ships, row, col)
-                        return False
+            return False
+
+    # def add_ships_manual2(self, number_of_human_ships, row, col):
+    #     # orientation = [Board.HORIZONTAL, Board.VERTICAL]
+    #     # direction = random.choice(orientation)
+    #     # self.add_ship(number_of_human_ships, direction, row, col)
+    #     print "Wspolrzedne [{}][{}], statek dlugosci {}/{}".format(col, row, self.new_ship_length , number_of_human_ships)
+    #     if self.new_ship_length == number_of_human_ships:
+    #         self.add_ship(self.new_ship_length, self.new_ship_orientation, self.new_ship_row[0], self.new_ship_col[0])
+    #         print "new_ship_length {} == {} number_of_human_ships".format(self.new_ship_length, number_of_human_ships)
+    #
+    #         #Reset values
+    #         print "Resetuje wartosci statku {}".format(number_of_human_ships)
+    #         self.new_ship_col = []
+    #         self.new_ship_row = []
+    #         self.new_ship_length = 0
+    #         self.new_ship_orientation = Board.HORIZONTAL
+    #
+    #         print "Zwracam True dla statku numer {}".format(number_of_human_ships)
+    #         return True
+    #     else:
+    #         if self.new_ship_length == 0:
+    #             self.new_ship_col.append(col)
+    #             self.new_ship_row.append(row)
+    #             self.new_ship_length += 1
+    #             print "nowa dlugosc statku: {}".format(self.new_ship_length)
+    #             self.add_ships_manual(number_of_human_ships, row, col)
+    #             return False
+    #         elif self.new_ship_length == 1:
+    #             print "new_ship_length = 1"
+    #             if col != self.new_ship_col[0] and row != self.new_ship_row[0]:
+    #                 print "Pierwszy if"
+    #                 return False
+    #             elif col != self.new_ship_col[0] and row == self.new_ship_row[0]:
+    #                 print "Drugi if"
+    #                 self.new_ship_orientation = Board.VERTICAL
+    #                 self.new_ship_col.append(col)
+    #                 self.new_ship_row.append(row)
+    #                 self.new_ship_length += 1
+    #                 self.add_ships_manual(number_of_human_ships, row, col)
+    #                 return False
+    #             elif col == self.new_ship_col[0] and row != self.new_ship_row[0]:
+    #                 print "Trzeci if"
+    #                 self.new_ship_orientation = Board.HORIZONTAL
+    #                 self.new_ship_col.append(col)
+    #                 self.new_ship_row.append(row)
+    #                 self.new_ship_length += 1
+    #                 self.add_ships_manual(number_of_human_ships, row, col)
+    #                 return False
+    #         elif self.new_ship_length >= 2:
+    #             if self.orientation == Board.VERTICAL:
+    #                 if col != self.new_ship_col[0]:
+    #                     return False
+    #                 else:
+    #                     self.new_ship_col.append(col)
+    #                     self.new_ship_row.append(row)
+    #                     self.new_ship_length += 1
+    #                     self.add_ships_manual(number_of_human_ships, row, col)
+    #                     return False
+    #             elif self.orientation == Board.HORIZONTAL:
+    #                 if row != self.new_ship_row[0]:
+    #                     return False
+    #                 else:
+    #                     self.new_ship_col.append(col)
+    #                     self.new_ship_row.append(row)
+    #                     self.new_ship_length += 1
+    #                     self.add_ships_manual(number_of_human_ships, row, col)
+    #                     return False
 
     def are_fields_empty(self, length, orientation, row, col):
         if orientation == Board.HORIZONTAL and col+length<=BOARDWIDTH:
-            for current_column in range(col+length):
-                if self.grid[row][current_column].ship or self.grid[row+1][current_column].ship or self.grid[row-1][current_column].ship:
+            for current_column in range(col, col+length-1):
+                if self.grid[row][current_column].ship:
                     return False
         elif orientation == Board.VERTICAL and row+length<=BOARDHEIGHT:
-            for current_row in range(row, row+length):
-                if self.grid[current_row][col].ship or self.grid[current_row][col-1].ship or self.grid[current_row][col+1].ship:
+            for current_row in range(row, row+length-1):
+                if self.grid[current_row][col].ship:
                     return False
         return True
 
@@ -170,11 +176,7 @@ class Board(object):
         if row >= BOARDWIDTH:
             row = BOARDWIDTH-1
         if col >= BOARDHEIGHT:
-            col = BOARDWIDTH
-        if row != self.last_shot_row:
-            col=self.last_shot_col
-        else:
-            row = self.last_shot_row
+            col = BOARDHEIGHT
         try:
             if not self.click_ship(row, col):
                 self.near_shot()

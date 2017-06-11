@@ -14,10 +14,10 @@ class Game(object):
         #Initialization
         self.hit_shots = 0
         self.player = self.HUMAN
-        self.number_of_ships = 2
+        # self.number_of_ships = 2
 
         self.is_human_ships_added = False
-        self.number_of_human_ships = 1
+        self.number_of_human_ships = 0
 
 
         pygame.init()
@@ -27,9 +27,9 @@ class Game(object):
         self.comp_board = Board(BOARDHEIGHT, BOARDWIDTH)
         # self.board.add_ship(length=3, orientation=Board.HORIZONTAL, row=0, col=0)
         self.screen = pygame.display.set_mode((window_width, window_height))
-        self.board.add_random_ships(self.number_of_ships) #Add computer ship on human board
+        self.board.add_random_ships(5) #Add computer ship on human board
         # self.comp_board.add_random_ships(5) #Add player ship on computer board
-        # self.board.add_ships_manual(5)
+
 
         while True:
             #Handle events
@@ -53,11 +53,11 @@ class Game(object):
                             break
                     elif self.is_human_ships_added == False:
                         if isinstance(col, int):
-                            if self.comp_board.add_ships_manual(self.number_of_human_ships, row, col) == True:
+                            if self.comp_board.add_ships_manual(row, col) == True:
                                 print "Zwrocil True, zwiekszam dlugosc statku."
                                 self.number_of_human_ships += 1
-                                print "Aktualnie number_of_human_ships {} / {} number_of_ships".format(self.number_of_human_ships, self.number_of_ships)
-                            if self.number_of_human_ships == self.number_of_ships+1:
+                                print "Aktualnie number_of_human_ships {} / {} board.total_ships_length".format(self.number_of_human_ships, self.board.total_ships_length)
+                            if self.number_of_human_ships == self.board.total_ships_length:
                                 self.is_human_ships_added = True
             if self.is_human_ships_added:
                 self._refresh_view()
