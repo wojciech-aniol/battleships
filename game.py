@@ -1,7 +1,6 @@
 import pygame, sys, random
 from pygame.locals import *
 
-
 from constants import *
 from board import Board
 
@@ -14,20 +13,17 @@ class Game(object):
         #Initialization
         self.hit_shots = 0
         self.player = self.HUMAN
-        # self.number_of_ships = 2
 
         self.is_human_ships_added = False
         self.number_of_human_ships = 0
-
 
         pygame.init()
         self.myfont = pygame.font.SysFont("monospace", 30)
 
         self.board = Board(BOARDHEIGHT, BOARDWIDTH)
         self.comp_board = Board(BOARDHEIGHT, BOARDWIDTH)
-        # self.board.add_ship(length=3, orientation=Board.HORIZONTAL, row=0, col=0)
         self.screen = pygame.display.set_mode((window_width, window_height))
-        self.board.add_random_ships(5) #Add computer ship on human board
+        self.board.add_random_ships(4) #Add computer ship on human board
         # self.comp_board.add_random_ships(5) #Add player ship on computer board
 
 
@@ -54,19 +50,14 @@ class Game(object):
                     elif self.is_human_ships_added == False:
                         if isinstance(col, int):
                             if self.comp_board.add_ships_manual(row, col) == True:
-                                print "Zwrocil True, zwiekszam dlugosc statku."
                                 self.number_of_human_ships += 1
-                                print "Aktualnie number_of_human_ships {} / {} board.total_ships_length".format(self.number_of_human_ships, self.board.total_ships_length)
+                                # print "Aktualnie number_of_human_ships {} / {} board.total_ships_length".format(self.number_of_human_ships, self.board.total_ships_length)
                             if self.number_of_human_ships == self.board.total_ships_length:
                                 self.is_human_ships_added = True
-            if self.is_human_ships_added:
+            if self.is_human_ships_added and not self.board.is_game_finished() and not self.comp_board.is_game_finished():
                 self._refresh_view()
-            else:
+            elif not self.is_human_ships_added:
                 self.start_game()
-            # if not self.is_human_ships_added:
-            #     self.start_game()
-            # if not self.board.is_game_finished() and not self.comp_board.is_game_finished():
-            #     self._refresh_view()
 
     def _refresh_view(self):
         self.screen.fill(gray)
@@ -91,22 +82,18 @@ class Game(object):
         self.screen.blit(self.shots, (10,10))
 
     def _paint_tile(self, player, row, col, color):
-        # if player == "human":
         left, top = self._left_top_coords_tile(player, row, col)
         pygame.draw.rect(self.screen, color, (left, top, tile_size, tile_size))
-        # elif player=="computer":
-        #     left = row * tile_size + margin_x + BOARDWIDTH*tile_size + 100
-        #     top = col * tile_size + margin_y
-        #     pygame.draw.rect(self.screen, color, (left, top, tile_size, tile_size))
+
     def draw(self):
         for row in xrange(self.board.height):
             for col in xrange(self.board.width):
-                color = self.board.get_color(row, col)
+                color = self.board.get_color(False, row, col)
                 self._paint_tile("human", col, row, color)
 
         for row in xrange(self.comp_board.height):
             for col in xrange(self.comp_board.width):
-                color = self.comp_board.get_color(row, col)
+                color = self.comp_board.get_color(True, row, col)
                 self._paint_tile("computer", col, row, color)
 
         #Drawing lines
@@ -131,7 +118,7 @@ class Game(object):
     def draw_empty_board(self):
         for row in xrange(self.comp_board.height):
             for col in xrange(self.comp_board.width):
-                color = self.comp_board.get_color(row, col)
+                color = self.comp_board.get_color(True, row, col)
                 self._paint_tile("computer", col, row, color)
         #Drawing lines
         board_width = BOARDWIDTH*tile_size
@@ -143,7 +130,6 @@ class Game(object):
         #Draw COMPUTER vertical lines
         for y in xrange(0, (BOARDHEIGHT + 1) * tile_size, tile_size):
             pygame.draw.line(self.screen, darkgrey, (margin_x + y + board_height + 100, margin_y), (margin_x + y + board_height + 100, margin_y + board_height))
-
 
     def end_game(self):
         self.screen.fill(gray)
