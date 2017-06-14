@@ -23,7 +23,7 @@ class Game(object):
         self.board = Board(BOARDHEIGHT, BOARDWIDTH)
         self.comp_board = Board(BOARDHEIGHT, BOARDWIDTH)
         self.screen = pygame.display.set_mode((window_width, window_height))
-        self.board.add_random_ships(4) #Add computer ship on human board
+        self.board.add_random_ships(5) #Add computer ship on human board
         # self.comp_board.add_random_ships(5) #Add player ship on computer board
 
 
@@ -142,13 +142,6 @@ class Game(object):
         pygame.display.update()
 
     def _get_tile_at_pixel(self, is_human_ships_added, x, y):
-        """
-        Function finds the corresponding tile coordinates of pixel at top left, defaults to (None, None) given a coordinate.
-
-        x -> int; x position of pixel
-        y -> int; y position of pixel
-        returns tuple (tilex, tiley)
-        """
         if is_human_ships_added == True:
             player = "human"
             for tilex in xrange(BOARDWIDTH):
@@ -169,13 +162,6 @@ class Game(object):
             return (None, None)
 
     def _left_top_coords_tile(self, player, row, col):
-        """
-        Function calculates and returns the pixel of the tile in the top left corner
-
-        row -> int; x position of tile
-        col -> int; y position of tile
-        returns tuple (int, int) which indicates top-left pixel coordinates of tile
-        """
         if player == "human":
             left = row * tile_size + margin_x
             top = col * tile_size + margin_y

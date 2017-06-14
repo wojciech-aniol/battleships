@@ -1,3 +1,6 @@
+Description:
+    Simply Battleship game, using objective Python with pygame
+
 Installation:
 
     virtualenv .venv
@@ -7,4 +10,4 @@ Installation:
 
 Preview:
 
-<img src="preview.png">
+<img src="preview.gif">

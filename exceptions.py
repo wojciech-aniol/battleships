@@ -1,3 +1,2 @@
-
 class FieldTakenException(Exception):
     pass
